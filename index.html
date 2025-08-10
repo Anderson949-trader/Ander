@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GPTrading Pro Dashboard v3 - IA Mejorada</title>
+  <title>GPTrading Pro Dashboard v4 - Mejorado</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
     :root {
@@ -21,7 +22,7 @@
     body { font-family: 'Poppins', sans-serif; background: var(--dark); color: var(--text); line-height: 1.6; transition: background 0.3s ease, color 0.3s ease; }
     .main-container { max-width: 1800px; margin: 0 auto; padding: 30px; }
     .header { background: var(--gradient-primary); border-radius: 25px; padding: 50px; margin-bottom: 40px; text-align: center; position: relative; overflow: hidden; box-shadow: var(--shadow-lg); }
-    .header h1 { color: white; font-size: 3.2rem; font-weight: 800; margin-bottom: 10px; text-shadow: 0 2px 5px rgba(0,0,0,0.4); }
+    .header h1 { color: white; font-size: 3.2rem; font-weight: 800; margin-bottom: 10px; text-shadow: 0 2px 5px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; gap: 15px; }
     .header p { color: rgba(255,255,255,0.9); font-size: 1.3rem; max-width: 900px; margin: 0 auto; }
     .controls-bar { display: flex; justify-content: space-between; align-items: center; background: var(--dark-secondary); padding: 25px; border-radius: 20px; margin-bottom: 40px; box-shadow: var(--shadow-lg); flex-wrap: wrap; gap: 15px; }
     .controls-bar > div { display: flex; gap: 15px; flex-wrap: wrap; }
@@ -33,7 +34,7 @@
     .btn-danger { background: var(--danger); color: white; }
     .btn-secondary { background: var(--secondary); color: white; }
     .btn-warning { background: var(--warning); color: white; }
-    .btn-icon { padding: 12px; font-size: 1.2em; }
+    .btn-icon { padding: 12px; font-size: 1em; width: 44px; justify-content: center; }
     .card { background: var(--gradient-card); border-radius: 25px; padding: 35px; margin-bottom: 30px; box-shadow: var(--shadow-lg); border: 1px solid var(--border); }
     .card h2, .card h3 { color: var(--text); font-size: 1.8rem; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 25px; }
@@ -49,7 +50,7 @@
     .stat-label { color: var(--text-light); font-size: 14px; font-weight: 500; }
     .table-container { background: var(--dark-secondary); border-radius: 15px; overflow-x: auto; box-shadow: var(--shadow-lg); margin-bottom: 30px; border: 1px solid var(--border); }
     .table { width: 100%; border-collapse: collapse; min-width: 900px; }
-    .table th { background: #1f2937; color: var(--text-light); padding: 20px 18px; text-align: left; font-weight: 600; font-size: 14px; text-transform: uppercase; }
+    .table th { background: #1f2937; color: var(--text-light); padding: 20px 18px; text-align: left; font-weight: 600; font-size: 14px; text-transform: uppercase; cursor: pointer; }
     .light-mode .table th { background: #e5e7eb; }
     .table td { padding: 18px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 15px; }
     .table tbody tr:last-child td { border-bottom: none; }
@@ -66,13 +67,48 @@
     .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); }
     .modal-content { background: var(--dark-secondary); margin: 10% auto; padding: 40px; border-radius: 20px; max-width: 600px; box-shadow: var(--shadow-lg); position: relative; }
     .close-btn { color: var(--text-light); float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; top: 15px; right: 25px; }
-    
+    i.fa, i.fas { line-height: 1; }
+
+    /* --- NUEVOS ESTILOS PARA MEJORAS --- */
+    .collapsible-content {
+      max-height: 1500px;
+      overflow: hidden;
+      transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+      opacity: 1;
+    }
+    .collapsible-content.collapsed {
+      max-height: 0;
+      opacity: 0;
+    }
+    #toggle-history-icon {
+        transition: transform 0.3s ease;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        opacity: 0.7;
+    }
+    .empty-state .fa-folder-open {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+    .notification { background: var(--dark-secondary); color: var(--text); padding: 15px 25px; border-radius: 12px; box-shadow: var(--shadow); transition: all 0.5s ease; cursor: pointer; display: flex; align-items: center; gap: 15px; border: 1px solid var(--border); }
+    .notification.btn-success { background: var(--success); color: white; border: none; }
+    .notification.btn-danger { background: var(--danger); color: white; border: none; }
+    .form-group-inline { display: flex; gap: 15px; align-items: flex-end; }
+    .table th.sortable { position: relative; }
+    .table th.sortable::after { content: '\f0dc'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-left: 8px; font-size: 0.8em; color: var(--text-light); }
+    .table th.sortable.asc::after { content: '\f0de'; }
+    .table th.sortable.desc::after { content: '\f0dd'; }
+    /* --- FIN DE NUEVOS ESTILOS --- */
+
     @media (max-width: 1200px) { .grid-container { grid-template-columns: 1fr; } }
     @media (max-width: 768px) {
         .header h1 { font-size: 2rem; } .header p { font-size: 1rem; }
         .controls-bar { flex-direction: column; align-items: stretch; }
         .controls-bar > div { flex-direction: column; } .btn { width: 100%; justify-content: center; }
         .modal-content { width: 90%; margin: 20% auto; }
+        .form-group-inline { flex-direction: column; align-items: stretch; }
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -80,110 +116,117 @@
 <body class="dark-mode">
   <div class="main-container">
     <div class="header">
-      <h1>📈 GPTrading Pro Dashboard v3 - IA Mejorada</h1>
+      <h1><i class="fas fa-chart-line"></i> GPTrading Pro Dashboard v4</h1>
       <p>Gestión de Trading Avanzada con Análisis de Rendimiento y Gestión de Riesgo</p>
     </div>
 
     <div class="controls-bar">
       <div>
-        <button class="btn btn-primary" onclick="toggleDarkMode()">🌓 Tema</button>
-        <button class="btn btn-secondary" onclick="exportBackup()">💾 Exportar Backup (JSON)</button>
+        <button class="btn btn-primary" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Tema</button>
+        <button class="btn btn-secondary" onclick="exportBackup()"><i class="fas fa-download"></i> Exportar Backup</button>
         <label for="import-json" class="btn btn-secondary" style="margin:0; cursor:pointer;">
           <input type="file" id="import-json" accept=".json" style="display:none;" onchange="importBackup(event)">
-          📂 Importar Backup (JSON)
+          <i class="fas fa-upload"></i> Importar Backup
         </label>
       </div>
       <div>
-        <button class="btn btn-danger" onclick="clearAllData()">🗑️ Limpiar Todo</button>
+        <button class="btn btn-danger" onclick="clearAllData()"><i class="fas fa-trash-alt"></i> Limpiar Todo</button>
       </div>
     </div>
     
     <div class="card">
-        <h2>📊 Resumen de Estadísticas Globales</h2>
+        <h2><i class="fas fa-globe"></i> Resumen de Estadísticas Globales</h2>
         <div class="stats-grid" id="global-stats"></div>
     </div>
     
     <div class="card">
-        <h2>💡 Métricas de Trading Avanzadas</h2>
+        <h2><i class="fas fa-lightbulb"></i> Métricas de Trading Avanzadas</h2>
         <div class="stats-grid" id="advanced-metrics"></div>
     </div>
 
     <div class="card">
-        <h2>🏦 Resumen por Cuenta</h2>
+        <h2><i class="fas fa-university"></i> Resumen por Cuenta</h2>
         <div id="account-stats-summary"></div>
     </div>
     
     <div class="grid-container">
-        <div class="card">
-            <h2>🎯 Metas y Objetivos</h2>
-            <div class="form-grid">
-                <div class="input-group">
-                    <label>Seleccionar Cuenta</label>
-                    <select class="form-control" id="goal-account-select"></select>
-                </div>
-                <div class="input-group">
-                    <label>Meta de Ganancia ($)</label>
-                    <input type="number" class="form-control" id="goal-amount" placeholder="1000">
-                </div>
-            </div>
-            <button class="btn btn-success" onclick="setGoal()">Establecer Meta</button>
-        </div>
-
-        <div class="card">
-            <h2>🛡️ Calculadora de Gestión de Riesgo</h2>
-            <div class="form-grid">
-                <div class="input-group">
-                    <label>Capital de la Cuenta ($)</label>
-                    <input type="number" class="form-control" id="risk-capital" placeholder="10000">
-                </div>
-                <div class="input-group">
-                    <label>Riesgo por Operación (%)</label>
-                    <input type="number" class="form-control" id="risk-percent" placeholder="1" value="1">
-                </div>
-            </div>
-            <button class="btn btn-primary" onclick="calculateRisk()">Calcular Inversión</button>
-            <div id="risk-result" style="margin-top: 15px; font-weight: 600;"></div>
-        </div>
-    </div>
-
-    <div class="card grid-container">
-      <div>
-        <h2>➕ Agregar Nueva Operación</h2>
-        <form id="add-operation-form" class="form-grid">
-          <div class="input-group"> <label>Cuenta</label> <select class="form-control" id="account-select"></select> </div>
-          <div class="input-group"> <label>Fecha</label> <input type="date" class="form-control" id="input-date"> </div>
-          <div class="input-group"> <label>Operaciones Ganadas</label> <input type="number" class="form-control" id="input-win" placeholder="5" min="0"> </div>
-          <div class="input-group"> <label>Operaciones Perdidas</label> <input type="number" class="form-control" id="input-loss" placeholder="2" min="0"> </div>
-          <div class="input-group"> <label>Ganancia ($)</label> <input type="number" class="form-control" id="input-gain" placeholder="300.00" step="0.01" min="0"> </div>
-          <div class="input-group"> <label>Pérdida ($)</label> <input type="number" class="form-control" id="input-loss-amount" placeholder="50.00" step="0.01" min="0"> </div>
-        </form>
-        <button class="btn btn-success" onclick="addOperation()">✅ Agregar Operación</button>
+      <div class="card">
+          <h2><i class="fas fa-plus-circle"></i> Agregar Nueva Operación</h2>
+          <form id="add-operation-form" class="form-grid">
+            <div class="input-group"> <label>Cuenta</label> <select class="form-control" id="account-select"></select> </div>
+            <div class="input-group"> <label>Fecha</label> <input type="date" class="form-control" id="input-date"> </div>
+            <div class="input-group"> <label>Operaciones Ganadas</label> <input type="number" class="form-control" id="input-win" placeholder="5" min="0"> </div>
+            <div class="input-group"> <label>Operaciones Perdidas</label> <input type="number" class="form-control" id="input-loss" placeholder="2" min="0"> </div>
+            <div class="input-group"> <label>Ganancia</label> <input type="number" class="form-control" id="input-gain" placeholder="300.00" step="0.01" min="0"> </div>
+            <div class="input-group"> <label>Pérdida</label> <input type="number" class="form-control" id="input-loss-amount" placeholder="50.00" step="0.01" min="0"> </div>
+          </form>
+          <button class="btn btn-success" onclick="addOperation()"><i class="fas fa-check"></i> Agregar Operación</button>
       </div>
-      <div>
-        <h2>🏦 Gestión de Cuentas</h2>
-        <form id="add-account-form" class="form-grid">
-          <div class="input-group"> <label>Nombre de la Cuenta</label> <input type="text" class="form-control" id="new-account-name" placeholder="Mi Cuenta Principal"> </div>
-          <div class="input-group"> <label>Capital Inicial ($)</label> <input type="number" class="form-control" id="new-account-balance" placeholder="1000.00" step="0.01" min="0"> </div>
-        </form>
-        <button class="btn btn-primary" onclick="addAccount()">🏦 Crear Cuenta</button>
+
+      <div class="card">
+          <h2><i class="fas fa-landmark"></i> Gestión de Cuentas</h2>
+          <form id="add-account-form" class="form-grid">
+            <div class="input-group"> <label>Nombre de la Cuenta</label> <input type="text" class="form-control" id="new-account-name" placeholder="Mi Cuenta Principal"> </div>
+            <div class="input-group">
+              <label>Capital Inicial</label>
+              <div class="form-group-inline" style="flex: 1;">
+                <input type="number" class="form-control" id="new-account-balance" placeholder="1000.00" step="0.01" min="0">
+                <select class="form-control" id="currency-select" style="width: auto;">
+                    <option value="$">USD ($)</option>
+                    <option value="€">EUR (€)</option>
+                    <option value="COP">COP ($)</option>
+                    <option value="£">GBP (£)</option>
+                </select>
+              </div>
+            </div>
+          </form>
+          <button class="btn btn-primary" onclick="addAccount()"><i class="fas fa-plus"></i> Crear Cuenta</button>
       </div>
     </div>
     
     <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2>📜 Historial de Operaciones Activas</h2>
-        <div class="pagination-controls" id="history-pagination"></div>
-      </div>
-      <div class="table-container">
-        <table class="table">
-          <thead><tr><th>Cuenta</th><th>Fecha</th><th>Gan/Perd</th><th>Ganancia</th><th>Pérdida</th><th>Neto</th><th>Acciones</th></tr></thead>
-          <tbody id="operations-table"></tbody>
-        </table>
-      </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <h2><i class="fas fa-history"></i> Historial de Operaciones Activas</h2>
+                <button id="toggle-history-btn" class="btn btn-secondary btn-icon" title="Ocultar/Mostrar Historial">
+                    <i id="toggle-history-icon" class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <div class="collapsible-content" id="history-controls">
+                <div class="form-group-inline">
+                    <input type="text" class="form-control" id="search-operations" placeholder="Buscar por cuenta...">
+                    <input type="date" class="form-control" id="filter-date-start">
+                    <input type="date" class="form-control" id="filter-date-end">
+                    <button class="btn btn-secondary" onclick="filterOperations()"><i class="fas fa-filter"></i> Filtrar</button>
+                </div>
+            </div>
+        </div>
+        <div class="collapsible-content" id="history-content">
+            <div class="table-container" id="history-table-container">
+                <table class="table">
+                    <thead><tr>
+                        <th class="sortable" onclick="sortOperations('account')">Cuenta</th>
+                        <th class="sortable" onclick="sortOperations('date')">Fecha</th>
+                        <th class="sortable" onclick="sortOperations('wins')">Gan/Perd</th>
+                        <th class="sortable" onclick="sortOperations('gain')">Ganancia</th>
+                        <th class="sortable" onclick="sortOperations('lossAmount')">Pérdida</th>
+                        <th class="sortable" onclick="sortOperations('netProfit')">Neto</th>
+                        <th>Acciones</th>
+                    </tr></thead>
+                    <tbody id="operations-table"></tbody>
+                </table>
+            </div>
+            <div id="history-empty-state" class="empty-state" style="display: none;">
+                <i class="fas fa-folder-open"></i>
+                <p>Aún no hay operaciones registradas.</p>
+                <p>¡Agrega tu primera operación para empezar a ver tus resultados!</p>
+            </div>
+            <div class="pagination-controls" id="history-pagination"></div>
+        </div>
     </div>
     
     <div class="card">
-        <h2>🗄️ Archivos por Periodo</h2>
+        <h2><i class="fas fa-archive"></i> Archivos por Periodo</h2>
         <div class="table-container">
             <table class="table">
                 <thead><tr><th>Cuenta</th><th>Periodo</th><th>Capital Inicial</th><th>Ganancia Neta</th><th>Capital Final</th><th>Acciones</th></tr></thead>
@@ -194,11 +237,11 @@
 
     <div class="grid-container">
         <div class="card">
-            <h2>📈 Curva de Capital (Equity Curve)</h2>
+            <h2><i class="fas fa-signal"></i> Curva de Capital (Equity Curve)</h2>
             <div class="chart-container"><canvas id="equityChart"></canvas></div>
         </div>
         <div class="card">
-            <h2>📊 Evolución Mensual</h2>
+            <h2><i class="fas fa-calendar-alt"></i> Evolución Mensual</h2>
             <div class="chart-container"><canvas id="monthlyChart"></canvas></div>
         </div>
     </div>
@@ -207,7 +250,7 @@
   <div id="close-period-modal" class="modal">
     <div class="modal-content">
       <span class="close-btn" onclick="closeModal('close-period-modal')">&times;</span>
-      <h2>📦 Archivar Periodo</h2>
+      <h2><i class="fas fa-box"></i> Archivar Periodo</h2>
       <input type="hidden" id="close-period-account-id">
       <div class="form-grid">
         <div class="input-group">
@@ -226,14 +269,14 @@
   <div id="edit-operation-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('edit-operation-modal')">&times;</span>
-        <h2>✏️ Editar Operación</h2>
+        <h2><i class="fas fa-edit"></i> Editar Operación</h2>
         <input type="hidden" id="edit-op-id">
         <div id="edit-operation-form" class="form-grid">
             <div class="input-group"> <label>Fecha</label> <input type="date" class="form-control" id="edit-input-date"> </div>
             <div class="input-group"> <label>Operaciones Ganadas</label> <input type="number" class="form-control" id="edit-input-win" min="0"> </div>
             <div class="input-group"> <label>Operaciones Perdidas</label> <input type="number" class="form-control" id="edit-input-loss" min="0"> </div>
-            <div class="input-group"> <label>Ganancia ($)</label> <input type="number" class="form-control" id="edit-input-gain" step="0.01" min="0"> </div>
-            <div class="input-group"> <label>Pérdida ($)</label> <input type="number" class="form-control" id="edit-input-loss-amount" step="0.01" min="0"> </div>
+            <div class="input-group"> <label>Ganancia</label> <input type="number" class="form-control" id="edit-input-gain" step="0.01" min="0"> </div>
+            <div class="input-group"> <label>Pérdida</label> <input type="number" class="form-control" id="edit-input-loss-amount" step="0.01" min="0"> </div>
         </div>
         <button class="btn btn-success" onclick="saveEditedOperation()">Guardar Cambios</button>
     </div>
@@ -255,6 +298,7 @@
 
   <div id="notification-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1002; display: flex; flex-direction: column; gap: 10px;"></div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
   <script>
     // --- CONFIG & UTILS ---
     const STORAGE_KEYS = {
@@ -266,20 +310,42 @@
     const ITEMS_PER_PAGE = 15;
     let currentPage = 1;
     let charts = {};
+    let currentOperations = [];
+    let sortColumn = 'date';
+    let sortDirection = 'desc';
 
-    const formatCurrency = (amount) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 2 }).format(amount);
+    const CURRENCY_FORMATS = {
+        '$': { symbol: '$', code: 'USD' },
+        '€': { symbol: '€', code: 'EUR' },
+        'COP': { symbol: '$', code: 'COP' },
+        '£': { symbol: '£', code: 'GBP' },
+    };
+
+    const getCurrency = (accountName) => {
+        const accounts = loadData(STORAGE_KEYS.accounts);
+        const account = accounts.find(acc => acc.name === accountName);
+        return CURRENCY_FORMATS[account?.currency] || CURRENCY_FORMATS['$'];
+    };
+
+    const formatCurrency = (amount, currencySymbol = '$') => {
+        const locale = navigator.language || 'es-CO';
+        return new Intl.NumberFormat(locale, { style: 'currency', currency: CURRENCY_FORMATS[currencySymbol]?.code || 'USD' }).format(amount);
+    };
+
     const formatPercentage = (value) => `${(value || 0).toFixed(2)}%`;
-    
-    // Función para obtener la fecha correcta (9 de agosto de 2025)
-    const getTodayDate = () => '2025-08-09';
-    
+    const getTodayDate = () => {
+        const today = new Date();
+        today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+        return today.toISOString().slice(0, 10);
+    };
     const generateUniqueId = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
     
     const showNotification = (message, type = 'success') => {
         const container = document.getElementById('notification-container');
         const notification = document.createElement('div');
+        const icon = type === 'success' ? 'fa-check-circle' : type === 'danger' ? 'fa-times-circle' : 'fa-info-circle';
         notification.className = `notification btn btn-${type}`;
-        notification.innerHTML = `<span>${message}</span>`;
+        notification.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
         container.appendChild(notification);
         setTimeout(() => { notification.style.opacity = 0; setTimeout(() => notification.remove(), 500); }, 5000);
     };
@@ -333,10 +399,11 @@
     const addAccount = () => {
         const name = document.getElementById('new-account-name').value.trim();
         const balance = parseFloat(document.getElementById('new-account-balance').value) || 0;
+        const currency = document.getElementById('currency-select').value;
         if (!name || balance < 0) { showNotification('⚠️ Datos de cuenta inválidos.', 'warning'); return; }
         const accounts = loadData(STORAGE_KEYS.accounts);
         if (accounts.find(acc => acc.name.toLowerCase() === name.toLowerCase())) { showNotification('⚠️ Ya existe una cuenta con ese nombre.', 'warning'); return; }
-        accounts.push({ id: generateUniqueId(), name, initialBalance: balance, createdAt: new Date().toISOString() });
+        accounts.push({ id: generateUniqueId(), name, initialBalance: balance, currency, createdAt: new Date().toISOString() });
         saveData(STORAGE_KEYS.accounts, accounts);
         document.getElementById('add-account-form').reset();
         refreshAll();
@@ -382,33 +449,15 @@
         showNotification('🎯 Meta establecida/actualizada.');
     };
     
-    const calculateRisk = () => {
-        const capital = parseFloat(document.getElementById('risk-capital').value);
-        const riskPercent = parseFloat(document.getElementById('risk-percent').value);
-        const resultDiv = document.getElementById('risk-result');
-        if (isNaN(capital) || isNaN(riskPercent) || capital <= 0 || riskPercent <= 0) {
-            resultDiv.textContent = 'Por favor, ingresa valores válidos.';
-            return;
-        }
-        const investment = capital * (riskPercent / 100);
-        resultDiv.innerHTML = `Monto a arriesgar: <span class="profit-text">${formatCurrency(investment)}</span>`;
-    };
-    
     // --- RENDERING ---
     function refreshAll() {
         const accounts = loadData(STORAGE_KEYS.accounts);
         const operations = loadData(STORAGE_KEYS.operations);
         
-        // Populate selects
         const accountSelects = document.querySelectorAll('#account-select, #goal-account-select');
         accountSelects.forEach(select => {
             select.innerHTML = '<option value="">Seleccionar cuenta...</option>';
-            accounts.forEach(acc => select.innerHTML += `<option value="${acc.id}">${acc.name}</option>`);
-            if (select.id === 'account-select') {
-                const accNames = accounts.map(a => a.name);
-                select.innerHTML = '<option value="">Seleccionar cuenta...</option>';
-                accNames.forEach(name => select.innerHTML += `<option value="${name}">${name}</option>`);
-            }
+            accounts.forEach(acc => select.innerHTML += `<option value="${acc.name}">${acc.name}</option>`);
         });
 
         const allData = calculateAllStats(accounts, operations);
@@ -416,19 +465,24 @@
         renderGlobalStats(allData.global);
         renderAdvancedMetrics(allData.global);
         renderAccountStatsSummary(allData.perAccount);
-        renderOperationsHistory(operations);
+
+        currentOperations = [...operations];
+        filterOperations();
+        
         renderPeriodArchives();
         renderCharts(allData);
 
-        // Establecer la fecha correcta
         document.getElementById('input-date').value = getTodayDate();
     }
 
     function renderGlobalStats(stats) {
         const container = document.getElementById('global-stats');
+        const currencySymbol = getCurrency('any').symbol;
         container.innerHTML = `
-            <div class="stat-card"> <div class="stat-value">${formatCurrency(stats.currentCapital)}</div> <div class="stat-label">Capital Actual</div> </div>
-            <div class="stat-card ${stats.netProfit >= 0 ? 'profit' : 'loss'}"> <div class="stat-value">${formatCurrency(stats.netProfit)}</div> <div class="stat-label">Ganancia Neta Total</div> </div>
+            <div class="stat-card"> <div class="stat-value">${formatCurrency(stats.currentCapital, currencySymbol)}</div> <div class="stat-label">Capital Actual</div> </div>
+            <div class="stat-card ${stats.netProfit >= 0 ? 'profit' : 'loss'}"> <div class="stat-value">${formatCurrency(stats.netProfit, currencySymbol)}</div> <div class="stat-label">Ganancia Neta Total</div> </div>
+            <div class="stat-card"> <div class="stat-value">${formatCurrency(stats.totalGain, currencySymbol)}</div> <div class="stat-label">Ganancia Bruta Total</div> </div>
+            <div class="stat-card"> <div class="stat-value">${formatCurrency(stats.totalLossAmount, currencySymbol)}</div> <div class="stat-label">Pérdida Bruta Total</div> </div>
             <div class="stat-card"> <div class="stat-value">${stats.totalWins}</div> <div class="stat-label">Operaciones Ganadas</div> </div>
             <div class="stat-card"> <div class="stat-value">${stats.totalLosses}</div> <div class="stat-label">Operaciones Perdidas</div> </div>
         `;
@@ -436,9 +490,10 @@
 
     function renderAdvancedMetrics(stats) {
         const container = document.getElementById('advanced-metrics');
+        const currencySymbol = getCurrency('any').symbol;
         container.innerHTML = `
             <div class="stat-card"> <div class="stat-value">${stats.profitFactor.toFixed(2)}</div> <div class="stat-label">Profit Factor</div> </div>
-            <div class="stat-card loss"> <div class="stat-value">${formatCurrency(stats.maxDrawdown.amount)}</div> <div class="stat-label">Max Drawdown</div> </div>
+            <div class="stat-card loss"> <div class="stat-value">${formatCurrency(stats.maxDrawdown.amount, currencySymbol)}</div> <div class="stat-label">Max Drawdown</div> </div>
             <div class="stat-card"> <div class="stat-value">${formatPercentage(stats.successRate)}</div> <div class="stat-label">Tasa de Éxito</div> </div>
             <div class="stat-card"> <div class="stat-value">${formatPercentage(stats.maxDrawdown.percentage)}</div> <div class="stat-label">Max Drawdown (%)</div> </div>
         `;
@@ -457,7 +512,7 @@
             if (goal) {
                 const progress = Math.min((acc.netProfit / goal.amount) * 100, 100);
                 goalHtml = `
-                    <div class="stat-label" style="margin-top: 10px;">Meta: ${formatCurrency(goal.amount)}</div>
+                    <div class="stat-label" style="margin-top: 10px;">Meta: ${formatCurrency(goal.amount, acc.currency)}</div>
                     <div class="progress-bar-container">
                         <div class="progress-bar" style="width: ${progress}%;">${progress.toFixed(0)}%</div>
                     </div>
@@ -467,16 +522,17 @@
             container.innerHTML += `
                 <div class="card" style="margin-bottom: 20px;">
                     <h3 style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>${acc.name}</span>
+                        <span>${acc.name} (${acc.currency})</span>
                         <div>
-                            <button class="btn btn-secondary btn-icon" title="Archivar Periodo" onclick="showClosePeriodDialog('${id}')">📦</button>
-                            <button class="btn btn-danger btn-icon" title="Eliminar Cuenta" onclick="deleteAccount('${id}')">🗑️</button>
+                            <button class="btn btn-secondary btn-icon" title="Archivar Periodo" onclick="showClosePeriodDialog('${id}')"><i class="fas fa-box"></i></button>
+                            <button class="btn btn-danger btn-icon" title="Eliminar Cuenta" onclick="deleteAccount('${id}')"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </h3>
                     <div class="stats-grid">
-                        <div class="stat-card"><div class="stat-value">${formatCurrency(acc.initialBalance)}</div><div class="stat-label">Capital Inicial</div></div>
-                        <div class="stat-card"><div class="stat-value">${formatCurrency(acc.currentCapital)}</div><div class="stat-label">Capital Actual</div></div>
-                        <div class="stat-card ${acc.netProfit >= 0 ? 'profit' : 'loss'}"><div class="stat-value">${formatCurrency(acc.netProfit)}</div><div class="stat-label">Ganancia Neta</div></div>
+                        <div class="stat-card"><div class="stat-value">${formatCurrency(acc.initialBalance, acc.currency)}</div><div class="stat-label">Capital Inicial</div></div>
+                        <div class="stat-card"><div class="stat-value">${formatCurrency(acc.currentCapital, acc.currency)}</div><div class="stat-label">Capital Actual</div></div>
+                        <div class="stat-card ${acc.netProfit >= 0 ? 'profit' : 'loss'}"><div class="stat-value">${formatCurrency(acc.netProfit, acc.currency)}</div><div class="stat-label">Ganancia Neta</div></div>
+                        <div class="stat-card loss"><div class="stat-value">${formatCurrency(acc.totalLossAmount, acc.currency)}</div><div class="stat-label">Pérdidas Totales</div></div>
                         <div class="stat-card"><div class="stat-value">${formatPercentage(acc.roi)}</div><div class="stat-label">Retorno (%)</div></div>
                     </div>
                     ${goalHtml}
@@ -485,45 +541,106 @@
         }
     }
     
-    function renderOperationsHistory(operations) {
+    function filterOperations() {
+        const allOperations = loadData(STORAGE_KEYS.operations);
+        const searchText = document.getElementById('search-operations').value.toLowerCase();
+        const startDate = document.getElementById('filter-date-start').value;
+        const endDate = document.getElementById('filter-date-end').value;
+
+        currentOperations = allOperations.filter(op => {
+            const matchesSearch = op.account.toLowerCase().includes(searchText);
+            const matchesDate = (!startDate || op.date >= startDate) && (!endDate || op.date <= endDate);
+            return matchesSearch && matchesDate;
+        });
+
+        sortOperations(sortColumn, sortDirection, false);
+    }
+
+    function sortOperations(column, direction = 'toggle', refresh = true) {
+        const getVal = (op, col) => {
+            if (col === 'netProfit' || col === 'gain' || col === 'lossAmount' || col === 'wins' || col === 'losses') return op[col];
+            if (col === 'date') return new Date(op.date);
+            return op[col].toLowerCase();
+        };
+
+        if (direction === 'toggle') {
+            if (column === sortColumn) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortDirection = 'desc';
+            }
+        } else {
+            sortDirection = direction;
+            sortColumn = column;
+        }
+
+        currentOperations.sort((a, b) => {
+            const valA = getVal(a, sortColumn);
+            const valB = getVal(b, sortColumn);
+            if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+            if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+        if (refresh) {
+            renderOperationsHistory();
+        } else {
+            renderOperationsHistory(currentOperations);
+        }
+
+        document.querySelectorAll('.table th').forEach(th => th.classList.remove('asc', 'desc'));
+        const activeTh = document.querySelector(`th[onclick*="'${sortColumn}'"]`);
+        if (activeTh) activeTh.classList.add(sortDirection);
+    }
+    
+    function renderOperationsHistory(operations = currentOperations) {
         const tableBody = document.getElementById('operations-table');
         const paginationContainer = document.getElementById('history-pagination');
+        const emptyState = document.getElementById('history-empty-state');
+        const tableContainer = document.getElementById('history-table-container');
         tableBody.innerHTML = '';
         paginationContainer.innerHTML = '';
 
-        const sortedOps = [...operations].sort((a,b) => new Date(b.date) - new Date(a.date));
-        const totalPages = Math.ceil(sortedOps.length / ITEMS_PER_PAGE);
-        const paginatedOps = sortedOps.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+        const totalPages = Math.ceil(operations.length / ITEMS_PER_PAGE);
+        currentPage = Math.min(currentPage, totalPages || 1);
+        const paginatedOps = operations.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
         if(paginatedOps.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No hay operaciones activas.</td></tr>`;
+            emptyState.style.display = 'block';
+            tableContainer.style.display = 'none';
+            paginationContainer.style.display = 'none';
             return;
         }
+
+        emptyState.style.display = 'none';
+        tableContainer.style.display = 'block';
+        paginationContainer.style.display = 'flex';
 
         paginatedOps.forEach(op => {
             const row = tableBody.insertRow();
             const netClass = op.netProfit >= 0 ? 'profit-text' : 'loss-text';
+            const currencySymbol = getCurrency(op.account).symbol;
             row.innerHTML = `
                 <td>${op.account}</td>
                 <td>${op.date}</td>
                 <td>${op.wins} / ${op.losses}</td>
-                <td class="profit-text">${formatCurrency(op.gain)}</td>
-                <td class="loss-text">${formatCurrency(op.lossAmount)}</td>
-                <td class="${netClass}">${formatCurrency(op.netProfit)}</td>
+                <td class="profit-text">${formatCurrency(op.gain, currencySymbol)}</td>
+                <td class="loss-text">${formatCurrency(op.lossAmount, currencySymbol)}</td>
+                <td class="${netClass}">${formatCurrency(op.netProfit, currencySymbol)}</td>
                 <td>
-                    <button class="btn btn-warning btn-sm" onclick="showEditOperationModal('${op.id}')">✏️</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteOperation('${op.id}')">🗑️</button>
+                    <button class="btn btn-warning btn-sm" onclick="showEditOperationModal('${op.id}')"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteOperation('${op.id}')"><i class="fas fa-trash-alt"></i></button>
                 </td>
             `;
         });
         
-        // Pagination controls
         if (totalPages > 1) {
             for (let i = 1; i <= totalPages; i++) {
                 const btn = document.createElement('button');
                 btn.className = `btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-secondary'}`;
                 btn.textContent = i;
-                btn.onclick = () => { currentPage = i; renderOperationsHistory(operations); };
+                btn.onclick = () => { currentPage = i; renderOperationsHistory(); };
                 paginationContainer.appendChild(btn);
             }
         }
@@ -539,25 +656,35 @@
         }
 
         archives.sort((a,b) => new Date(b.archivedAt) - new Date(a.archivedAt)).forEach(archive => {
+            const currencySymbol = getCurrency(archive.accountName).symbol;
             const row = tableBody.insertRow();
             const netClass = archive.netProfit >= 0 ? 'badge-success' : 'badge-danger';
             row.innerHTML = `
                 <td>${archive.accountName}</td>
                 <td>${archive.startDate} al ${archive.endDate}</td>
-                <td>${formatCurrency(archive.initialCapital)}</td>
-                <td><span class="badge ${netClass}">${formatCurrency(archive.netProfit)}</span></td>
-                <td>${formatCurrency(archive.finalCapital)}</td>
+                <td>${formatCurrency(archive.initialCapital, currencySymbol)}</td>
+                <td><span class="badge ${netClass}">${formatCurrency(archive.netProfit, currencySymbol)}</span></td>
+                <td>${formatCurrency(archive.finalCapital, currencySymbol)}</td>
                 <td>
                     <button class="btn btn-primary btn-sm" onclick="showArchiveDetails('${archive.id}')">Ver</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteArchive('${archive.id}')">🗑️</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteArchive('${archive.id}')"><i class="fas fa-trash-alt"></i></button>
                 </td>
             `;
         });
     }
 
     function renderCharts(allData) {
-        // Destroy existing charts
         Object.values(charts).forEach(chart => chart.destroy());
+
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text') }}},
+            scales: {
+                x: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-light') }, grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--border') }},
+                y: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-light') }, grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--border') }}
+            }
+        };
 
         const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
         const monthlyLabels = Object.keys(allData.monthlySummary);
@@ -572,7 +699,7 @@
                     backgroundColor: monthlyData.map(v => v >= 0 ? 'rgba(16, 185, 129, 0.6)' : 'rgba(239, 68, 68, 0.6)') 
                 }]
             },
-            options: { responsive: true, maintainAspectRatio: false }
+            options: chartOptions
         });
 
         const ctxEquity = document.getElementById('equityChart').getContext('2d');
@@ -588,7 +715,7 @@
                     tension: 0.1
                 }]
             },
-            options: { responsive: true, maintainAspectRatio: false }
+            options: chartOptions
         });
     }
     
@@ -597,12 +724,10 @@
         let global = { totalWins: 0, totalLosses: 0, totalGain: 0, totalLossAmount: 0, netProfit: 0, initialCapital: 0, currentCapital: 0 };
         let perAccount = {};
         let equityPoints = [];
-        let peakEquity = 0;
         
         accounts.forEach(acc => {
             global.initialCapital += acc.initialBalance;
-            perAccount[acc.id] = { ...acc, currentCapital: acc.initialBalance, netProfit: 0, roi: 0, wins: 0, losses: 0, gain: 0, lossAmount: 0, equity: [acc.initialBalance] };
-            peakEquity += acc.initialBalance;
+            perAccount[acc.id] = { ...acc, currentCapital: acc.initialBalance, netProfit: 0, roi: 0, wins: 0, losses: 0, totalGain: 0, totalLossAmount: 0 };
         });
 
         let cumulativeCapital = global.initialCapital;
@@ -618,30 +743,29 @@
             perAccount[accId].netProfit += op.netProfit;
             perAccount[accId].wins += op.wins;
             perAccount[accId].losses += op.losses;
-            perAccount[accId].gain += op.gain;
-            perAccount[accId].lossAmount += op.lossAmount;
+            perAccount[accId].totalGain += op.gain;
+            perAccount[accId].totalLossAmount += op.lossAmount;
             
             cumulativeCapital += op.netProfit;
             equityPoints.push({ date: op.date, capital: cumulativeCapital });
         });
         
-        // Final calculations
         global.currentCapital = Object.values(perAccount).reduce((sum, acc) => sum + acc.currentCapital, 0);
         global.netProfit = global.currentCapital - global.initialCapital;
         global.totalWins = sortedOps.reduce((sum, op) => sum + op.wins, 0);
         global.totalLosses = sortedOps.reduce((sum, op) => sum + op.losses, 0);
+        global.totalGain = sortedOps.reduce((sum, op) => sum + op.gain, 0);
+        global.totalLossAmount = sortedOps.reduce((sum, op) => sum + op.lossAmount, 0);
         
         Object.values(perAccount).forEach(acc => {
             acc.roi = acc.initialBalance > 0 ? (acc.netProfit / acc.initialBalance) * 100 : 0;
         });
         
-        // Advanced Metrics
         const grossProfit = sortedOps.reduce((sum, op) => sum + op.gain, 0);
         const grossLoss = sortedOps.reduce((sum, op) => sum + op.lossAmount, 0);
         global.profitFactor = grossLoss > 0 ? grossProfit / grossLoss : Infinity;
         global.successRate = (global.totalWins + global.totalLosses) > 0 ? (global.totalWins / (global.totalWins + global.totalLosses)) * 100 : 0;
         
-        // Max Drawdown Calculation
         let peak = -Infinity;
         let maxDrawdown = { amount: 0, percentage: 0 };
         equityPoints.forEach(point => {
@@ -652,7 +776,6 @@
         maxDrawdown.percentage = peak > 0 ? (maxDrawdown.amount / peak) * 100 : 0;
         global.maxDrawdown = maxDrawdown;
 
-        // Monthly Summary
         const monthlySummary = sortedOps.reduce((acc, op) => {
             const month = op.date.slice(0, 7);
             acc[month] = (acc[month] || 0) + op.netProfit;
@@ -757,7 +880,7 @@
         let balanceBeforePeriod = account.initialBalance + operations.filter(op => op.account === account.name && op.date < startDate).reduce((sum, op) => sum + op.netProfit, 0);
         const endOfPeriodBalance = balanceBeforePeriod + periodNetProfit;
 
-        if (!confirm(`¿Estás seguro?\nSe archivarán ${opsToArchive.length} operaciones del ${startDate} al ${endDate} para "${account.name}".\nEl nuevo capital inicial de la cuenta será ${formatCurrency(endOfPeriodBalance)}.`)) return;
+        if (!confirm(`¿Estás seguro?\nSe archivarán ${opsToArchive.length} operaciones del ${startDate} al ${endDate} para "${account.name}".\nEl nuevo capital inicial de la cuenta será ${formatCurrency(endOfPeriodBalance, account.currency)}.`)) return;
 
         archives.push({
             id: generateUniqueId(), accountId, accountName: account.name, startDate, endDate,
@@ -780,13 +903,14 @@
     function showArchiveDetails(archiveId) {
         const archive = loadData(STORAGE_KEYS.archives).find(a => a.id === archiveId);
         if (!archive) return;
+        const currencySymbol = getCurrency(archive.accountName).symbol;
 
         document.getElementById('archive-details-title').textContent = `Detalles: ${archive.accountName} (${archive.startDate} - ${archive.endDate})`;
         
         document.getElementById('archive-details-stats').innerHTML = `
-            <div class="stat-card"><div class="stat-value">${formatCurrency(archive.initialCapital)}</div><div class="stat-label">Capital Inicial</div></div>
-            <div class="stat-card profit"><div class="stat-value">${formatCurrency(archive.netProfit)}</div><div class="stat-label">Ganancia Neta</div></div>
-            <div class="stat-card"><div class="stat-value">${formatCurrency(archive.finalCapital)}</div><div class="stat-label">Capital Final</div></div>
+            <div class="stat-card"><div class="stat-value">${formatCurrency(archive.initialCapital, currencySymbol)}</div><div class="stat-label">Capital Inicial</div></div>
+            <div class="stat-card profit"><div class="stat-value">${formatCurrency(archive.netProfit, currencySymbol)}</div><div class="stat-label">Ganancia Neta</div></div>
+            <div class="stat-card"><div class="stat-value">${formatCurrency(archive.finalCapital, currencySymbol)}</div><div class="stat-label">Capital Final</div></div>
         `;
 
         const tableBody = document.getElementById('archive-details-table');
@@ -796,9 +920,9 @@
             row.innerHTML = `
                 <td>${op.date}</td>
                 <td>${op.wins}/${op.losses}</td>
-                <td class="profit-text">${formatCurrency(op.gain)}</td>
-                <td class="loss-text">${formatCurrency(op.lossAmount)}</td>
-                <td class="${op.netProfit >= 0 ? 'profit-text' : 'loss-text'}">${formatCurrency(op.netProfit)}</td>
+                <td class="profit-text">${formatCurrency(op.gain, currencySymbol)}</td>
+                <td class="loss-text">${formatCurrency(op.lossAmount, currencySymbol)}</td>
+                <td class="${op.netProfit >= 0 ? 'profit-text' : 'loss-text'}">${formatCurrency(op.netProfit, currencySymbol)}</td>
             `;
         });
         document.getElementById('archive-details-modal').style.display = 'block';
@@ -814,11 +938,13 @@
 
     function toggleDarkMode() {
       document.body.classList.toggle('light-mode');
+      refreshAll();
     };
     
     function clearAllData() {
         if (confirm('¿ESTÁS SEGURO? Se borrarán TODOS los datos de la aplicación de forma irreversible.')) {
-            localStorage.clear();
+            Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
+            currentPage = 1;
             refreshAll();
             showNotification('💥 Todos los datos han sido eliminados.', 'danger');
         }
@@ -828,6 +954,22 @@
     document.addEventListener('DOMContentLoaded', () => {
         migrateData();
         refreshAll();
+        
+        const toggleBtn = document.getElementById('toggle-history-btn');
+        const historyContent = document.getElementById('history-content');
+        const historyControls = document.getElementById('history-controls');
+        const toggleIcon = document.getElementById('toggle-history-icon');
+
+        toggleBtn.addEventListener('click', () => {
+            const isCollapsed = historyContent.classList.toggle('collapsed');
+            historyControls.classList.toggle('collapsed', isCollapsed);
+            toggleIcon.classList.toggle('fa-chevron-up', isCollapsed);
+            toggleIcon.classList.toggle('fa-chevron-down', !isCollapsed);
+        });
+
+        document.getElementById('search-operations').addEventListener('input', filterOperations);
+        document.getElementById('filter-date-start').addEventListener('change', filterOperations);
+        document.getElementById('filter-date-end').addEventListener('change', filterOperations);
     });
 
   </script>
